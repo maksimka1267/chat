@@ -10,6 +10,7 @@ namespace ClientService.Repository
         Task<Client> GetClientByUserName(string userName);
 
         Task<bool> AddClient(Client client);
-        Task<bool> AddSession(Guid clientId, Guid sessionId);
+        Task<bool> AddFriend(Guid clientId, Guid friendsId);
+        Task<List<Guid>> GetListFriend(Guid clientId);
     }
 }

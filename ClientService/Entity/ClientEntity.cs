@@ -1,4 +1,5 @@
-﻿namespace ClientService.Entity
+﻿
+namespace ClientService.Entity
 {
     public class ClientEntity
     {
@@ -9,7 +10,7 @@
         public string? password { get; set; }
 
         public string? email { get; set; }
-        public List<Guid>? SessionIds { get; set; }
+        public List<Guid> Friends { get; set; }
 
     }
 }

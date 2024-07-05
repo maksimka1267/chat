@@ -58,16 +58,15 @@ namespace ClientService.Repository
 
         }
 
-        public async Task<bool> AddSession(Guid clientId, Guid sessionId)
+        public async Task<bool> AddFriend(Guid clientId, Guid friendsId)
         {
             ClientEntity? clientEntity = await _context.Clients.FindAsync(clientId);
-
-            if (clientEntity == null)
+            ClientEntity? friends =await _context.Clients.FindAsync(friendsId);
+            if (clientEntity == null|| friends ==null)
             {
                 return false;
             }
-
-            clientEntity.SessionIds?.Add(sessionId);
+            clientEntity.Friends?.Add(friendsId);
 
             _context.Clients.Update(clientEntity);
 
@@ -75,6 +74,17 @@ namespace ClientService.Repository
 
             return true;
         }
+        public async Task<List<Guid>> GetListFriend(Guid clientId)
+        {
+            ClientEntity? clientEntity = await _context.Clients.FindAsync(clientId);
+            if (clientEntity == null)
+            {
+                return new List<Guid>();
+            }
+            List<Guid> friends=clientEntity.Friends.ToList();
+            return friends;
+        }
+            
 
         public async Task<bool> RegisterClientAsync(Client client)
         {
