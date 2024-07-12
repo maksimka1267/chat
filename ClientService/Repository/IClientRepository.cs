@@ -11,6 +11,5 @@ namespace ClientService.Repository
 
         Task<bool> AddClient(Client client);
         Task<bool> AddFriend(Guid clientId, Guid friendsId);
-        Task<List<Guid>> GetListFriend(Guid clientId);
     }
 }

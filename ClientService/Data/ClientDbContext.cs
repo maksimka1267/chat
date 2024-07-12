@@ -28,6 +28,8 @@ namespace ClientService.Data
                 entity.Property(e => e.userName).IsRequired();
                 entity.Property(e => e.password).IsRequired();
                 entity.Property(e => e.email).IsRequired();
+                entity.Property(e=> e.friends).IsRequired();
+                entity.Property(e=>e.chats).IsRequired();
             });
 
             base.OnModelCreating(modelBuilder);
