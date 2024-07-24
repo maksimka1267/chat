@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIGateway", "APIGateway\AP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Front", "Front\Front.csproj", "{41340F13-6850-47C1-811F-1CC96E431661}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatService", "ChatService\ChatService.csproj", "{2E8B7BCD-FECE-45FF-94FD-2FAC1861F4FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatService", "ChatService\ChatService.csproj", "{2E8B7BCD-FECE-45FF-94FD-2FAC1861F4FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

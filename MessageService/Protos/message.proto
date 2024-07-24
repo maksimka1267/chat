@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+option csharp_namespace = "MessageService.Protos";
+package MessageService;
+
+service MessageService {
+    rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
+    rpc GetMessage(GetMessageRequest) returns (GetMessageResponse);
+    rpc FindMessage(FindMessageRequest) returns (FindMessageResponse);
+    rpc DeleteMessage(DeleteMessageRequest) returns (DeleteMessageResponse);
+    rpc UpdateMessage(UpdateMessageRequest) returns (UpdateMessageResponse);
+}
+
+message Message {
+    string id = 1;
+    string text = 2;
+    string author = 3;
+    repeated string chatIds = 4;
+}
+
+message SendMessageRequest {
+    Message message = 1;
+}
+
+message SendMessageResponse {
+    bool isSent = 1;
+}
+
+message GetMessageRequest {
+    string id = 1;
+}
+
+message GetMessageResponse {
+    Message message = 1;
+}
+
+message FindMessageRequest {
+    string text = 1;
+}
+
+message FindMessageResponse {
+    repeated Message messages = 1;
+}
+
+message DeleteMessageRequest {
+    string id = 1;
+}
+
+message DeleteMessageResponse {
+    bool isSuccess = 1;
+}
+
+message UpdateMessageRequest {
+    string id = 1;
+    string text = 2;
+}
+
+message UpdateMessageResponse {
+    bool isSuccess = 1;
+}

@@ -10,7 +10,7 @@ namespace ClientService.Entity
         public string? password { get; set; }
 
         public string? email { get; set; }
-        public List<string>? friends { get; set; }
+        public List<Guid>? friends { get; set; }
         public List<Guid>? chats {  get; set; }
 
     }

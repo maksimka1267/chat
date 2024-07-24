@@ -5,45 +5,56 @@ option csharp_namespace = "ClientService";
 package ClientService;
 
 service ClientAccount {
-  rpc RegisterClient(RegisterClientRequest) returns (RegisterClientResponse);
-  rpc AuthenticateClient(AuthenticateClientRequest) returns (AuthenticateClientResponse);
-  rpc GetClientInfo (GetClientInfoRequest) returns (GetClientInfoResponse);
-  rpc AddFriend (AddFriendRequest) returns (AddFriendResponse);
+    rpc RegisterClient(RegisterClientRequest) returns (RegisterClientResponse);
+    rpc AuthenticateClient(AuthenticateClientRequest) returns (AuthenticateClientResponse);
+    rpc GetClientInfo(GetClientInfoRequest) returns (GetClientInfoResponse);
+    rpc AddFriend(AddFriendRequest) returns (AddFriendResponse);
 }
-message ClientMessage  {
-	string email = 1;
-	string userName = 2;
-	string password = 3;
-	repeated string chatIds = 4;
+
+message ClientMessage {
+    string id = 1;
+    string email = 2;
+    string userName = 3;
+    string password = 4;
+    repeated string chatIds = 5;
+    repeated string friendsIds = 6;
 }
-message RegisterClientRequest{
-	string email = 1;
-	string userName = 2;
-	string password = 3;
+
+message RegisterClientRequest {
+    string email = 1;
+    string userName = 2;
+    string password = 3;
 }
-message RegisterClientResponse{
-	bool isSuccess = 1;
-	string errorMessage = 2;
+
+message RegisterClientResponse {
+    bool isSuccess = 1;
+    string errorMessage = 2;
 }
-message AuthenticateClientRequest{
-	string email = 1;
-	string password = 2;
+
+message AuthenticateClientRequest {
+    string email = 1;
+    string password = 2;
 }
-message AuthenticateClientResponse{
-	bool isSuccess = 1;
-	string token = 2;
-	string errorMessage = 3;
+
+message AuthenticateClientResponse {
+    bool isSuccess = 1;
+    string token = 2;
+    string errorMessage = 3;
 }
-message GetClientInfoRequest{
-	string id = 1;
+
+message GetClientInfoRequest {
+    string id = 1;
 }
-message GetClientInfoResponse{
-	ClientMessage client = 1;
+
+message GetClientInfoResponse {
+    ClientMessage client = 1;
 }
-message AddFriendRequest{
-	string userName = 1;
+
+message AddFriendRequest {
+    string userName = 1;
 }
-message AddFriendResponse{
-	bool isSuccess = 1;
-	string errorMessage = 2;
+
+message AddFriendResponse {
+    bool isSuccess = 1;
+    string errorMessage = 2;
 }

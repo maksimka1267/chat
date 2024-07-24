@@ -19,59 +19,51 @@ namespace ClientService.Repository
 
         public async Task<Client> GetClientByEmail(string email)
         {
-            ClientEntity? clientEntity = await _context.Clients
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.email == email);
-
-
+            var clientEntity = await _context.Clients.AsNoTracking().FirstOrDefaultAsync(c => c.email == email);
             return _mapper.Map<Client>(clientEntity);
         }
 
         public async Task<Client> GetClientById(Guid id)
         {
-            ClientEntity clientEntity = await _context.Clients.FindAsync(id) ?? throw new Exception("No user under such ID");
-
-
+            var clientEntity = await _context.Clients.FindAsync(id);
+            if (clientEntity == null)
+            {
+                throw new Exception("No user under such ID");
+            }
             return _mapper.Map<Client>(clientEntity);
         }
 
-
         public async Task<Client> GetClientByUserName(string userName)
         {
-            ClientEntity clientEntity = await _context.Clients
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.userName == userName) ?? throw new Exception("Wrong username");
-
+            var clientEntity = await _context.Clients.AsNoTracking().FirstOrDefaultAsync(c => c.userName == userName);
+            if (clientEntity == null)
+            {
+                throw new Exception("Wrong username");
+            }
             return _mapper.Map<Client>(clientEntity);
         }
 
         public async Task<bool> AddClient(Client client)
         {
-            ClientEntity clientEntity = _mapper.Map<ClientEntity>(client);
-
+            var clientEntity = _mapper.Map<ClientEntity>(client);
             await _context.Clients.AddAsync(clientEntity);
             await _context.SaveChangesAsync();
-
-            var addedClientEntity = await _context.Clients.FindAsync(clientEntity.Id);
-
-            return addedClientEntity != null;
-
+            return await _context.Clients.FindAsync(clientEntity.Id) != null;
         }
 
         public async Task<bool> AddFriend(Guid clientId, Guid friendsId)
         {
-            ClientEntity? clientEntity = await _context.Clients.FindAsync(clientId);
-            ClientEntity? friends =await _context.Clients.FindAsync(friendsId);
-            if (clientEntity == null|| friends ==null)
+            var clientEntity = await _context.Clients.FindAsync(clientId);
+            var friendsEntity = await _context.Clients.FindAsync(friendsId);
+
+            if (clientEntity == null || friendsEntity == null)
             {
                 return false;
             }
+
             clientEntity.friends?.Add(friendsId);
-
             _context.Clients.Update(clientEntity);
-
             await _context.SaveChangesAsync();
-
             return true;
         }
 
@@ -82,8 +74,7 @@ namespace ClientService.Repository
                 return false;
             }
 
-            ClientEntity clientEntity = _mapper.Map<ClientEntity>(client);
-
+            var clientEntity = _mapper.Map<ClientEntity>(client);
             await _context.Clients.AddAsync(clientEntity);
             await _context.SaveChangesAsync();
             return true;
