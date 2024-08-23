@@ -79,5 +79,42 @@ namespace ClientService.Repository
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> DeleteFriend(Guid clientId, Guid friendsId)
+        {
+            // Находим клиента в базе данных по его идентификатору
+            var clientEntity = await _context.Clients.FindAsync(clientId);
+            // Если клиент не найден, возвращаем false
+            if (clientEntity == null)
+            {
+                return false;
+            }
+            // Проверяем, есть ли указанный друг в списке друзей клиента
+            if (clientEntity.friends != null && clientEntity.friends.Contains(friendsId))
+            {
+                // Удаляем друга из списка
+                clientEntity.friends.Remove(friendsId);
+                // Сохраняем изменения в базе данных
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            // Если друг не найден в списке друзей, возвращаем false
+            return false;
+        }
+        public async Task<bool> DeleteClient(Guid clientId)
+        {
+            // Находим клиента в базе данных по его идентификатору
+            var clientEntity = await _context.Clients.FindAsync(clientId);
+            // Если клиент не найден, возвращаем false
+            if (clientEntity == null)
+            {
+                return false;
+            }
+            // Удаляем клиента из базы данных
+            _context.Clients.Remove(clientEntity);
+            // Сохраняем изменения в базе данных
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
