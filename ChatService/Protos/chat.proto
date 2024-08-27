@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+option csharp_namespace = "ChatService.Protos";
+
+package chatservice;
+
+// Сервіс для управління чатами
+service ChatService {
+    rpc CreateChat(CreateChatRequest) returns (ChatResponse);
+    rpc GetChatById(ChatIdRequest) returns (ChatResponse);
+    rpc GetAllChats(EmptyRequest) returns (ChatListResponse);
+    rpc UpdateChat(UpdateChatRequest) returns (ChatResponse);
+    rpc DeleteChat(ChatIdRequest) returns (EmptyRequest);
+}
+
+// Опис чатів
+message Chat {
+    string id = 1;
+    string name = 2;
+    repeated string chaters = 3;
+    repeated string messages = 4;
+    string description = 5;
+    bool isGroupChat = 6;
+    repeated string admins = 7;
+    string avatarUrl = 8;
+    string createdAt = 9;
+    string updatedAt = 10;
+}
+
+// Запити для створення та редагування чатів
+message CreateChatRequest {
+    Chat chat = 1;
+}
+
+message UpdateChatRequest {
+    Chat chat = 1;
+}
+
+// Запити для видалення та пошуку чатів
+message ChatIdRequest {
+    string id = 1;
+}
+
+message EmptyRequest {}
+
+// Відповіді сервісу
+message ChatResponse {
+    Chat chat = 1;
+}
+
+message ChatListResponse {
+    repeated Chat chats = 1;
+}
