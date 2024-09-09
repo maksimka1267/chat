@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
+using ClientService.Services;
 
 namespace ClientService
 {
@@ -32,7 +33,7 @@ namespace ClientService
                 );
             var app = builder.Build();
 
-            //app.MapGrpcService<ClientServiceImpl>();
+            app.MapGrpcService<ClientServiceImpl>();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

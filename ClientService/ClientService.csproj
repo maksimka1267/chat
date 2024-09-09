@@ -6,10 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Protos\clientaccount.proto" />
-  </ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
@@ -30,10 +26,6 @@
 		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.6.1" />
 		<PackageReference Include="Npgsql" Version="8.0.3" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Services\" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,4 +1,4 @@
-﻿/*using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using ChatService.Data;
@@ -8,10 +8,11 @@ using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using ChatService.Repository;
+using static ChatService.Protos.ChatService;
 
 namespace ChatService.Services
 {
-    public class ChatServiceImpl : ChatService.ChatServiceBase
+    public class ChatServiceImpl : ChatServiceBase
     {
         private readonly IChatRepository _repository;
         private readonly IMapper _mapper;
@@ -73,4 +74,3 @@ namespace ChatService.Services
         }
     }
 }
-*/

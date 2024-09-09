@@ -2,6 +2,7 @@ using MessageService;
 using Microsoft.EntityFrameworkCore;
 using MessageService.Data;
 using MessageService.Repository;
+using MessageService.Services;
 namespace MessageService
 {
     public class Program
@@ -24,7 +25,7 @@ namespace MessageService
                 );
             var app = builder.Build();
 
-            //app.MapGrpcService<MessageServiceImpl>();
+            app.MapGrpcService<MessageServiceImpl>();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

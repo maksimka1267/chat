@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 option csharp_namespace = "MessageService.Protos";
-package MessageService;
+package ServiceMessage;
 
 service MessageService {
     rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);

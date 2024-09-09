@@ -1,4 +1,6 @@
-﻿namespace ClientService.Model
+﻿using System;
+
+namespace ClientService.Model
 {
     public class Client
     {
@@ -11,6 +13,11 @@
         public string email { get; set; }
         public List<Guid>? friends { get; set; }
         public List<Guid>? chats { get; set; }
+        public Client()
+        {
+            friends = new List<Guid>();
+            chats = new List<Guid>();
+        }
         private Client(string userName, string password, string email)
         {
             Id = new Guid();
