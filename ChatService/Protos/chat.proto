@@ -1,8 +1,10 @@
 syntax = "proto3";
 
-option csharp_namespace = "ChatService.Protos";
+import "google/protobuf/timestamp.proto"; // Импортируем Timestamp
 
-package chatservice;
+option csharp_namespace = "ServiceChat";
+
+package ServiceChat;
 
 // Сервіс для управління чатами
 service ChatService {
@@ -23,8 +25,8 @@ message Chat {
     bool isGroupChat = 6;
     repeated string admins = 7;
     string avatarUrl = 8;
-    string createdAt = 9;
-    string updatedAt = 10;
+    google.protobuf.Timestamp createdAt = 9; // Используем Timestamp для времени
+    google.protobuf.Timestamp updatedAt = 10; // Используем Timestamp для времени
 }
 
 // Запити для створення та редагування чатів

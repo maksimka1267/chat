@@ -3,12 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using ChatService.Data;
 using ChatService.Entity;
-using ChatService.Protos;
+using ServiceChat;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using ChatService.Repository;
-using static ChatService.Protos.ChatService;
+using static ServiceChat.ChatService;
 
 namespace ChatService.Services
 {

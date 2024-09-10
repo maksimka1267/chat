@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Grpc.Core;
-using MessageService.Protos;
+using ServiceMessage;
 using MessageService.Repository;
-using static MessageService.Protos.MessageService;
+using static ServiceMessage.MessageService;
 
 namespace MessageService.Services
 {
@@ -35,14 +35,14 @@ namespace MessageService.Services
                 throw new RpcException(new Status(StatusCode.NotFound, "Message not found"));
             }
 
-            var responseMessage = _mapper.Map<Protos.Message>(message);
+            var responseMessage = _mapper.Map<Message>(message);
             return new GetMessageResponse { Message = responseMessage };
         }
 
         public override async Task<FindMessageResponse> FindMessage(FindMessageRequest request, ServerCallContext context)
         {
             var messages = await _messageRepository.FindMessagesAsync(request.Text);
-            var responseMessages = _mapper.Map<IEnumerable<Protos.Message>>(messages);
+            var responseMessages = _mapper.Map<IEnumerable<Message>>(messages);
 
             var response = new FindMessageResponse();
             response.Messages.AddRange(responseMessages);
