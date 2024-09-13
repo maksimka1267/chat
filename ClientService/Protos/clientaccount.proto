@@ -9,6 +9,7 @@ service ClientAccount {
     rpc AuthenticateClient(AuthenticateClientRequest) returns (AuthenticateClientResponse);
     rpc GetClientInfo(GetClientInfoRequest) returns (GetClientInfoResponse);
     rpc AddFriend(AddFriendRequest) returns (AddFriendResponse);
+    rpc AddChat(AddChatRequest) returns (AddChatResponse);
 }
 
 message ClientMessage {
@@ -32,8 +33,8 @@ message RegisterClientResponse {
 }
 
 message AuthenticateClientRequest {
-    string email = 1;
-    string password = 2;
+  string identifier = 1; 
+  string password = 2;
 }
 
 message AuthenticateClientResponse {
@@ -51,10 +52,19 @@ message GetClientInfoResponse {
 }
 
 message AddFriendRequest {
-    string userName = 1;
+    string userId = 1;
+    string friendsId = 2;
 }
 
 message AddFriendResponse {
+    bool isSuccess = 1;
+    string errorMessage = 2;
+}
+message AddChatRequest{
+    string clientId = 1;
+    string chatId = 2;
+}
+message AddChatResponse{
     bool isSuccess = 1;
     string errorMessage = 2;
 }

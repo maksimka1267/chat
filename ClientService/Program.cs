@@ -1,15 +1,14 @@
 using ClientService.Data;
-using ClientService.Repository;
-
+using ClientService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Identity;
-using ClientService.Services;
+using ClientService.JWT;
+using ClientService.Auth;
+using ClientService.Repository;
 
 namespace ClientService
 {
@@ -23,7 +22,10 @@ namespace ClientService
             builder.Services.AddAutoMapper(typeof(DataBaseMappings));
             builder.Services.AddAuthorization();
             builder.Services.AddAuthentication();
+            builder.Services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
             builder.Services.AddGrpc();
+            builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<IClientRepository, ClientRepository>();
             builder.Services.AddDbContext<ClientDbContext>(
                 options =>

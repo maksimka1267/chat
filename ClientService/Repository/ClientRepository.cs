@@ -19,7 +19,11 @@ namespace ClientService.Repository
 
         public async Task<Client> GetClientByEmail(string email)
         {
-            var clientEntity = await _context.Clients.AsNoTracking().FirstOrDefaultAsync(c => c.email == email);
+            ClientEntity? clientEntity = await _context.Clients
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.email == email);
+
+
             return _mapper.Map<Client>(clientEntity);
         }
 
@@ -117,5 +121,38 @@ namespace ClientService.Repository
             return true;
         }
 
+        public async Task<bool> AddChat(Guid clientId, Guid chatId)
+        {
+            // Получаем клиента по его ID
+            var client = await _context.Clients.FindAsync(clientId);
+
+            if (client == null)
+            {
+                // Клиент не найден, возвращаем false
+                return false;
+            }
+
+            // Проверяем, существует ли такой чат уже у клиента
+            if (client.chats != null && client.chats.Contains(chatId))
+            {
+                // Если чат уже добавлен, возвращаем true (чат уже связан с клиентом)
+                return true;
+            }
+
+            // Если чатов у клиента еще нет, инициализируем список
+            if (client.chats == null)
+            {
+                client.chats = new List<Guid>();
+            }
+
+            // Добавляем новый чат
+            client.chats.Add(chatId);
+
+            // Сохраняем изменения в базе данных
+            _context.Clients.Update(client);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

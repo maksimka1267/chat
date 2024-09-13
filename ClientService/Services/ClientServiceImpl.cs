@@ -1,18 +1,30 @@
 ﻿using AutoMapper;
+using ClientService.Auth;
+using ClientService.JWT;
+using ClientService.Model;
 using ClientService.Repository;
 using Grpc.Core;
 using static ClientService.ClientAccount;
 
 namespace ClientService.Services
 {
-    public class ClientServiceImpl:ClientAccountBase
+    public class ClientServiceImpl : ClientAccountBase
     {
         private readonly IClientRepository _clientRepository;
+        private readonly IPasswordHasher _passwordHasher;
+        private readonly IJwtProvider _jwtProvider;
         private readonly IMapper _mapper;
 
-        public ClientServiceImpl(IClientRepository clientRepository, IMapper mapper)
+        public ClientServiceImpl(
+           IClientRepository clientRepository,
+           IPasswordHasher passwordHasher,
+           IJwtProvider jwtProvider,
+           IMapper mapper)
+
         {
             _clientRepository = clientRepository;
+            _passwordHasher = passwordHasher;
+            _jwtProvider = jwtProvider;
             _mapper = mapper;
         }
 
@@ -22,7 +34,7 @@ namespace ClientService.Services
             {
                 email = request.Email,
                 userName = request.UserName,
-                password = request.Password, // Password should be hashed in a real scenario
+                password = request.Password, // Пароль необходимо хешировать на реальном проекте
             };
 
             var isSuccess = await _clientRepository.RegisterClientAsync(client);
@@ -32,7 +44,7 @@ namespace ClientService.Services
                 return new RegisterClientResponse
                 {
                     IsSuccess = false,
-                    ErrorMessage = "Client with the same email or username already exists"
+                    ErrorMessage = "Клиент с таким email или именем пользователя уже существует"
                 };
             }
 
@@ -41,24 +53,23 @@ namespace ClientService.Services
 
         public override async Task<AuthenticateClientResponse> AuthenticateClient(AuthenticateClientRequest request, ServerCallContext context)
         {
-            var client = await _clientRepository.GetClientByEmail(request.Email);
+            Client client = await _clientRepository.GetClientByEmail(request.Identifier);
 
-            if (client == null || client.password != request.Password) // In a real system, you'd verify hashed password
+            if (client == null)
             {
-                return new AuthenticateClientResponse
-                {
-                    IsSuccess = false,
-                    ErrorMessage = "Invalid email or password"
-                };
+                return new AuthenticateClientResponse { IsSuccess = false, Token = string.Empty, ErrorMessage = "No user found with this email" };
             }
 
-            // Generate a token (simplified)
-            var token = "generated_token"; // Replace with actual JWT token generation
-            return new AuthenticateClientResponse
+            var result = _passwordHasher.Verify(request.Password, client.password);
+
+            if (result == false)
             {
-                IsSuccess = true,
-                Token = token
-            };
+                return new AuthenticateClientResponse { IsSuccess = false, Token = string.Empty, ErrorMessage = "Wrong password" };
+            }
+
+            var token = _jwtProvider.GenerateToken(client);
+
+            return new AuthenticateClientResponse { IsSuccess = true, Token = token };
         }
 
         public override async Task<GetClientInfoResponse> GetClientInfo(GetClientInfoRequest request, ServerCallContext context)
@@ -68,7 +79,7 @@ namespace ClientService.Services
 
             if (client == null)
             {
-                throw new RpcException(new Status(StatusCode.NotFound, "Client not found"));
+                throw new RpcException(new Status(StatusCode.NotFound, "Клиент не найден"));
             }
 
             var clientMessage = _mapper.Map<ClientMessage>(client);
@@ -77,30 +88,47 @@ namespace ClientService.Services
 
         public override async Task<AddFriendResponse> AddFriend(AddFriendRequest request, ServerCallContext context)
         {
-            var client = await _clientRepository.GetClientByUserName(request.UserName);
+            var client = await _clientRepository.GetClientById(Guid.Parse(request.UserId));
 
             if (client == null)
             {
                 return new AddFriendResponse
                 {
                     IsSuccess = false,
-                    ErrorMessage = "Client not found"
+                    ErrorMessage = "Клиент не найден"
                 };
             }
 
-            var friend = await _clientRepository.GetClientByUserName(request.UserName);
+            var friend = await _clientRepository.GetClientById(Guid.Parse(request.FriendsId));
 
             if (friend == null)
             {
                 return new AddFriendResponse
                 {
                     IsSuccess = false,
-                    ErrorMessage = "Friend not found"
+                    ErrorMessage = "Друг не найден"
                 };
             }
 
             var isSuccess = await _clientRepository.AddFriend(client.Id, friend.Id);
             return new AddFriendResponse { IsSuccess = isSuccess };
+        }
+
+        public override async Task<AddChatResponse> AddChat(AddChatRequest request, ServerCallContext context)
+        {
+            var client = await _clientRepository.GetClientById(Guid.Parse(request.ClientId));
+
+            if (client == null)
+            {
+                return new AddChatResponse
+                {
+                    IsSuccess = false,
+                    ErrorMessage = "Клиент не найден"
+                };
+            }
+
+            var isSuccess = await _clientRepository.AddChat(client.Id, Guid.Parse(request.ChatId));
+            return new AddChatResponse { IsSuccess = isSuccess };
         }
     }
 }
