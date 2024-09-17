@@ -3,6 +3,8 @@ using ClientService.Data;
 using ClientService.Entity;
 using ClientService.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ClientService.Repository
 {
@@ -17,33 +19,27 @@ namespace ClientService.Repository
             _mapper = mapper;
         }
 
-        public async Task<Client> GetClientByEmail(string email)
+        public async Task<Client?> GetClientByEmail(string email)
         {
-            ClientEntity? clientEntity = await _context.Clients
+            var clientEntity = await _context.Clients
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.email == email);
 
-
             return _mapper.Map<Client>(clientEntity);
         }
 
-        public async Task<Client> GetClientById(Guid id)
+        public async Task<Client?> GetClientById(Guid id)
         {
             var clientEntity = await _context.Clients.FindAsync(id);
-            if (clientEntity == null)
-            {
-                throw new Exception("No user under such ID");
-            }
             return _mapper.Map<Client>(clientEntity);
         }
 
-        public async Task<Client> GetClientByUserName(string userName)
+        public async Task<Client?> GetClientByUserName(string userName)
         {
-            var clientEntity = await _context.Clients.AsNoTracking().FirstOrDefaultAsync(c => c.userName == userName);
-            if (clientEntity == null)
-            {
-                throw new Exception("Wrong username");
-            }
+            var clientEntity = await _context.Clients
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.userName == userName);
+
             return _mapper.Map<Client>(clientEntity);
         }
 
@@ -51,24 +47,8 @@ namespace ClientService.Repository
         {
             var clientEntity = _mapper.Map<ClientEntity>(client);
             await _context.Clients.AddAsync(clientEntity);
-            await _context.SaveChangesAsync();
-            return await _context.Clients.FindAsync(clientEntity.Id) != null;
-        }
-
-        public async Task<bool> AddFriend(Guid clientId, Guid friendsId)
-        {
-            var clientEntity = await _context.Clients.FindAsync(clientId);
-            var friendsEntity = await _context.Clients.FindAsync(friendsId);
-
-            if (clientEntity == null || friendsEntity == null)
-            {
-                return false;
-            }
-
-            clientEntity.friends?.Add(friendsId);
-            _context.Clients.Update(clientEntity);
-            await _context.SaveChangesAsync();
-            return true;
+            var changes = await _context.SaveChangesAsync();
+            return changes > 0;
         }
 
         public async Task<bool> RegisterClientAsync(Client client)
@@ -80,79 +60,132 @@ namespace ClientService.Repository
 
             var clientEntity = _mapper.Map<ClientEntity>(client);
             await _context.Clients.AddAsync(clientEntity);
-            await _context.SaveChangesAsync();
-            return true;
+            var changes = await _context.SaveChangesAsync();
+            return changes > 0;
         }
 
-        public async Task<bool> DeleteFriend(Guid clientId, Guid friendsId)
+        public async Task<bool> AddFriend(Guid clientId, Guid friendId)
         {
-            // Находим клиента в базе данных по его идентификатору
+            // Найти клиента и друга в базе данных
             var clientEntity = await _context.Clients.FindAsync(clientId);
-            // Если клиент не найден, возвращаем false
-            if (clientEntity == null)
+            var friendEntity = await _context.Clients.FindAsync(friendId);
+
+            // Проверить, существует ли клиент и друг
+            if (clientEntity == null || friendEntity == null)
             {
                 return false;
             }
-            // Проверяем, есть ли указанный друг в списке друзей клиента
-            if (clientEntity.friends != null && clientEntity.friends.Contains(friendsId))
+
+            // Обновить список друзей клиента
+            if (clientEntity.friends == null)
             {
-                // Удаляем друга из списка
-                clientEntity.friends.Remove(friendsId);
-                // Сохраняем изменения в базе данных
-                await _context.SaveChangesAsync();
-                return true;
+                clientEntity.friends = new List<Guid>();
             }
-            // Если друг не найден в списке друзей, возвращаем false
-            return false;
+
+            if (!clientEntity.friends.Contains(friendEntity.Id))
+            {
+                clientEntity.friends.Add(friendEntity.Id);
+                _context.Clients.Update(clientEntity);
+            }
+
+            // Обновить список друзей друга
+            if (friendEntity.friends == null)
+            {
+                friendEntity.friends = new List<Guid>();
+            }
+
+            if (!friendEntity.friends.Contains(clientEntity.Id))
+            {
+                friendEntity.friends.Add(clientEntity.Id);
+                _context.Clients.Update(friendEntity);
+            }
+
+            // Сохранить изменения в базе данных
+            await _context.SaveChangesAsync();
+
+            return true;
         }
+
+
+        public async Task<bool> DeleteFriend(Guid clientId, Guid friendId)
+        {
+            // Получаем клиента из базы данных
+            var client = await _context.Clients.FirstOrDefaultAsync(c => c.Id == clientId);
+            var friend = await _context.Clients.FirstOrDefaultAsync(c => c.Id == friendId);
+
+            if (client == null || friend == null)
+            {
+                return false;
+            }
+
+            // Проверяем, есть ли друг в списке клиента
+            if (client.friends != null && client.friends.Contains(friendId))
+            {
+                // Удаляем друга из списка клиента
+                client.friends.Remove(friendId);
+            }
+
+            // Проверяем, есть ли клиент в списке друзей друга
+            if (friend.friends != null && friend.friends.Contains(clientId))
+            {
+                // Удаляем клиента из списка друзей друга
+                friend.friends.Remove(clientId);
+            }
+
+            // Сохраняем изменения
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<bool> DeleteClient(Guid clientId)
         {
-            // Находим клиента в базе данных по его идентификатору
             var clientEntity = await _context.Clients.FindAsync(clientId);
-            // Если клиент не найден, возвращаем false
             if (clientEntity == null)
             {
                 return false;
             }
-            // Удаляем клиента из базы данных
+
             _context.Clients.Remove(clientEntity);
-            // Сохраняем изменения в базе данных
-            await _context.SaveChangesAsync();
-            return true;
+            var changes = await _context.SaveChangesAsync();
+            return changes > 0;
         }
 
-        public async Task<bool> AddChat(Guid clientId, Guid chatId)
+        /*public async Task<bool> AddChat(Guid clientId, Guid chatId)
         {
-            // Получаем клиента по его ID
-            var client = await _context.Clients.FindAsync(clientId);
-
-            if (client == null)
+            var clientEntity = await _context.Clients.FindAsync(clientId);
+            if (clientEntity == null)
             {
-                // Клиент не найден, возвращаем false
                 return false;
             }
 
-            // Проверяем, существует ли такой чат уже у клиента
-            if (client.chats != null && client.chats.Contains(chatId))
+            if (clientEntity.chats == null)
             {
-                // Если чат уже добавлен, возвращаем true (чат уже связан с клиентом)
-                return true;
+                clientEntity.chats = new List<Guid>();
             }
 
-            // Если чатов у клиента еще нет, инициализируем список
-            if (client.chats == null)
+            if (!clientEntity.chats.Contains(chatId))
             {
-                client.chats = new List<Guid>();
+                clientEntity.chats.Add(chatId);
+                _context.Clients.Update(clientEntity);
+                await _context.SaveChangesAsync();
             }
-
-            // Добавляем новый чат
-            client.chats.Add(chatId);
-
-            // Сохраняем изменения в базе данных
-            _context.Clients.Update(client);
-            await _context.SaveChangesAsync();
 
             return true;
         }
+        */
+        public async Task<List<Client>> GetListFriends(Guid clientId)
+        {
+            // Получаем все сущности клиентов, у которых в списке друзей есть данный clientId
+            List<ClientEntity> clientEntities = await _context.Clients
+                .Where(c => c.friends.Contains(clientId))
+                .ToListAsync();
+
+            // Преобразуем клиентские сущности в объекты модели Client
+            List<Client> clients = _mapper.Map<List<Client>>(clientEntities);
+
+            return clients;
+        }
+
     }
 }

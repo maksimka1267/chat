@@ -7,14 +7,17 @@ using System.Text;
 
 namespace ClientService.JWT
 {
-    public class JwtProvider(IOptions<JwtOptions> options) : IJwtProvider
+    public class JwtProvider : IJwtProvider
     {
-        private readonly JwtOptions _options = options.Value;
+        private readonly JwtOptions _options;
+
+        public JwtProvider(IOptions<JwtOptions> options)
+        {
+            _options = options.Value;
+        }
 
         public string GenerateToken(Client client)
         {
-            //Claim[] claims = [new("clientId", client.Id.ToString())];
-
             List<Claim> claims = new List<Claim>
             {
                 new Claim("clientId", client.Id.ToString())

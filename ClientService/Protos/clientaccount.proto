@@ -9,7 +9,9 @@ service ClientAccount {
     rpc AuthenticateClient(AuthenticateClientRequest) returns (AuthenticateClientResponse);
     rpc GetClientInfo(GetClientInfoRequest) returns (GetClientInfoResponse);
     rpc AddFriend(AddFriendRequest) returns (AddFriendResponse);
-    rpc AddChat(AddChatRequest) returns (AddChatResponse);
+    rpc ListFriend(ListFriendRequest) returns (ListFriendResponse);
+    rpc DeleteFriend(DeleteFriendRequest) returns (DeleteFriendResponse);
+    rpc DeleteClient(DeleteClientRequest) returns (DeleteClientResponse);
 }
 
 message ClientMessage {
@@ -19,6 +21,33 @@ message ClientMessage {
     string password = 4;
     repeated string chatIds = 5;
     repeated string friendsIds = 6;
+}
+message ListFriendRequest{
+    string clientId = 1;
+}
+
+message ListFriendResponse{
+    bool IsSuccess = 1;
+    string ErrorMessage = 2;
+    repeated ClientMessage friends = 3;
+}
+
+message DeleteClientRequest {
+    string clientId = 1;
+}
+
+message DeleteClientResponse {
+    bool isSuccess = 1;
+    string errorMessage = 2;
+}
+
+message DeleteFriendRequest{
+    string clientId = 1;
+    string friendId = 2;
+}
+message DeleteFriendResponse{
+    bool isSuccess = 1;
+    string ErrorMessage = 2;
 }
 
 message RegisterClientRequest {
@@ -53,18 +82,10 @@ message GetClientInfoResponse {
 
 message AddFriendRequest {
     string userId = 1;
-    string friendsId = 2;
+    string friendId = 2;
 }
 
 message AddFriendResponse {
-    bool isSuccess = 1;
-    string errorMessage = 2;
-}
-message AddChatRequest{
-    string clientId = 1;
-    string chatId = 2;
-}
-message AddChatResponse{
     bool isSuccess = 1;
     string errorMessage = 2;
 }
