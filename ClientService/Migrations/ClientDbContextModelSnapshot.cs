@@ -51,7 +51,7 @@ namespace ClientService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Client");
                 });
 #pragma warning restore 612, 618
         }

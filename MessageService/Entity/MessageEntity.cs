@@ -6,6 +6,7 @@
 
         public string? Text { get; set; }
         public Guid Author { get; set; }
+        public Guid Chat {  get; set; }
         public DateTime Date { get; set; }
 
         public byte[]? Photo { get; set; }

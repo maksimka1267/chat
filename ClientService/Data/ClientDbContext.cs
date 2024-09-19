@@ -10,7 +10,7 @@ namespace ClientService.Data
             Database.Migrate();
         }
 
-        public DbSet<ClientEntity> Clients { get; set; }
+        public DbSet<ClientEntity> Client { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

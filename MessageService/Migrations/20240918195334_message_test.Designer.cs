@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MessageService.Migrations
 {
     [DbContext(typeof(MessageDBContext))]
-    [Migration("20240823123637_message_test")]
+    [Migration("20240918195334_message_test")]
     partial class message_test
     {
         /// <inheritdoc />
@@ -32,6 +32,9 @@ namespace MessageService.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("Author")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Chat")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("Date")

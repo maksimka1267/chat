@@ -9,7 +9,7 @@ namespace MessageService
         public DataBaseMappings()
         {
             CreateMap<MessageEntity, Message>()
-                .ConstructUsing(src => Message.Create(src.Text, src.Author, src.Photo))
+                .ConstructUsing(src => Message.Create(src.Text, src.Author,src.Chat, src.Photo))
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date));
             CreateMap<Message, MessageEntity>();

@@ -8,11 +8,12 @@ package ServiceChat;
 
 // Сервіс для управління чатами
 service ChatService {
-    rpc CreateChat(CreateChatRequest) returns (ChatResponse);
-    rpc GetChatById(ChatIdRequest) returns (ChatResponse);
-    rpc GetAllChats(EmptyRequest) returns (ChatListResponse);
-    rpc UpdateChat(UpdateChatRequest) returns (ChatResponse);
-    rpc DeleteChat(ChatIdRequest) returns (EmptyRequest);
+    rpc CreateChat(CreateChatRequest) returns (CreateChatResponse);
+    rpc GetChatById(GetChatByIdRequest) returns (GetChatByIdResponse);
+    rpc GetAllChats(GetlAllChatRequest) returns (GetlAllChatResponse);
+    rpc UpdateChat(UpdateChatRequest) returns (UpdateChatResponse);
+    rpc DeleteChat(DeleteChatRequest) returns (DeleteChatResponse); // Исправлено
+    rpc GetAllChatsOfClient(GetAllChatsOfClientRequest) returns (GetAllChatsOfClientResponse);
 }
 
 // Опис чатів
@@ -22,34 +23,67 @@ message Chat {
     repeated string chaters = 3;
     repeated string messages = 4;
     string description = 5;
-    bool isGroupChat = 6;
-    repeated string admins = 7;
-    string avatarUrl = 8;
-    google.protobuf.Timestamp createdAt = 9; // Используем Timestamp для времени
-    google.protobuf.Timestamp updatedAt = 10; // Используем Timestamp для времени
+    google.protobuf.Timestamp createdAt = 6; // Используем Timestamp для времени
+    google.protobuf.Timestamp updatedAt = 7; // Используем Timestamp для времени
 }
 
 // Запити для створення та редагування чатів
 message CreateChatRequest {
-    Chat chat = 1;
+    string name = 1;
+    repeated string chaters = 2;
 }
 
 message UpdateChatRequest {
-    Chat chat = 1;
+    string id = 1;
+    string name = 2;
+}
+
+message UpdateChatResponse {
+    bool IsSuccess = 1;
+    string ErrorMessage = 2;
 }
 
 // Запити для видалення та пошуку чатів
-message ChatIdRequest {
+message DeleteChatRequest {
     string id = 1;
 }
 
-message EmptyRequest {}
-
-// Відповіді сервісу
-message ChatResponse {
-    Chat chat = 1;
+message DeleteChatResponse {
+    bool IsSuccess = 1;
+    string ErrorMessage = 2;
 }
 
-message ChatListResponse {
+// Відповіді сервісу
+message CreateChatResponse {
+    Chat chat = 1;
+    string ErrorMessage = 2;
+}
+
+message GetAllChatsOfClientRequest {
+    string clientId = 1; // Добавляем clientId для идентификации пользователя
+}
+
+message GetAllChatsOfClientResponse {
     repeated Chat chats = 1;
+    string ErrorMessage = 2;
+}
+
+// Запити для отримання чату за ID
+message GetChatByIdRequest {
+    string id = 1; // Идентификатор чата
+}
+
+message GetChatByIdResponse {
+    Chat chat = 1;
+    string ErrorMessage = 2;
+}
+
+// Запит для отримання всіх чатів
+message GetlAllChatRequest {
+
+}
+
+message GetlAllChatResponse {
+    repeated Chat chats = 1;
+    string ErrorMessage = 2;
 }

@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ClientService.Migrations
 {
     [DbContext(typeof(ClientDbContext))]
-    [Migration("20240823122505_Client_test")]
-    partial class Client_test
+    [Migration("20240918195550_client_test")]
+    partial class client_test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,7 +54,7 @@ namespace ClientService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Client");
                 });
 #pragma warning restore 612, 618
         }

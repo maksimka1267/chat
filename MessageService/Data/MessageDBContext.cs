@@ -28,6 +28,7 @@ namespace MessageService.Data
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
                 entity.Property(e => e.Text).IsRequired(false);
                 entity.Property(e => e.Author).IsRequired();
+                entity.Property(e => e.Chat).IsRequired();
                 entity.Property(e => e.Date).IsRequired();
                 entity.Property(e => e.Photo).IsRequired(false);
             });

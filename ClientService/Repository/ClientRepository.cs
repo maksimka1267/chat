@@ -21,7 +21,7 @@ namespace ClientService.Repository
 
         public async Task<Client?> GetClientByEmail(string email)
         {
-            var clientEntity = await _context.Clients
+            var clientEntity = await _context.Client
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.email == email);
 
@@ -30,13 +30,13 @@ namespace ClientService.Repository
 
         public async Task<Client?> GetClientById(Guid id)
         {
-            var clientEntity = await _context.Clients.FindAsync(id);
+            var clientEntity = await _context.Client.FindAsync(id);
             return _mapper.Map<Client>(clientEntity);
         }
 
         public async Task<Client?> GetClientByUserName(string userName)
         {
-            var clientEntity = await _context.Clients
+            var clientEntity = await _context.Client
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.userName == userName);
 
@@ -46,20 +46,20 @@ namespace ClientService.Repository
         public async Task<bool> AddClient(Client client)
         {
             var clientEntity = _mapper.Map<ClientEntity>(client);
-            await _context.Clients.AddAsync(clientEntity);
+            await _context.Client.AddAsync(clientEntity);
             var changes = await _context.SaveChangesAsync();
             return changes > 0;
         }
 
         public async Task<bool> RegisterClientAsync(Client client)
         {
-            if (await _context.Clients.AnyAsync(c => c.email == client.email || c.userName == client.userName))
+            if (await _context.Client.AnyAsync(c => c.email == client.email || c.userName == client.userName))
             {
                 return false;
             }
 
             var clientEntity = _mapper.Map<ClientEntity>(client);
-            await _context.Clients.AddAsync(clientEntity);
+            await _context.Client.AddAsync(clientEntity);
             var changes = await _context.SaveChangesAsync();
             return changes > 0;
         }
@@ -67,8 +67,8 @@ namespace ClientService.Repository
         public async Task<bool> AddFriend(Guid clientId, Guid friendId)
         {
             // Найти клиента и друга в базе данных
-            var clientEntity = await _context.Clients.FindAsync(clientId);
-            var friendEntity = await _context.Clients.FindAsync(friendId);
+            var clientEntity = await _context.Client.FindAsync(clientId);
+            var friendEntity = await _context.Client.FindAsync(friendId);
 
             // Проверить, существует ли клиент и друг
             if (clientEntity == null || friendEntity == null)
@@ -85,7 +85,7 @@ namespace ClientService.Repository
             if (!clientEntity.friends.Contains(friendEntity.Id))
             {
                 clientEntity.friends.Add(friendEntity.Id);
-                _context.Clients.Update(clientEntity);
+                _context.Client.Update(clientEntity);
             }
 
             // Обновить список друзей друга
@@ -97,7 +97,7 @@ namespace ClientService.Repository
             if (!friendEntity.friends.Contains(clientEntity.Id))
             {
                 friendEntity.friends.Add(clientEntity.Id);
-                _context.Clients.Update(friendEntity);
+                _context.Client.Update(friendEntity);
             }
 
             // Сохранить изменения в базе данных
@@ -110,8 +110,8 @@ namespace ClientService.Repository
         public async Task<bool> DeleteFriend(Guid clientId, Guid friendId)
         {
             // Получаем клиента из базы данных
-            var client = await _context.Clients.FirstOrDefaultAsync(c => c.Id == clientId);
-            var friend = await _context.Clients.FirstOrDefaultAsync(c => c.Id == friendId);
+            var client = await _context.Client.FirstOrDefaultAsync(c => c.Id == clientId);
+            var friend = await _context.Client.FirstOrDefaultAsync(c => c.Id == friendId);
 
             if (client == null || friend == null)
             {
@@ -140,13 +140,13 @@ namespace ClientService.Repository
 
         public async Task<bool> DeleteClient(Guid clientId)
         {
-            var clientEntity = await _context.Clients.FindAsync(clientId);
+            var clientEntity = await _context.Client.FindAsync(clientId);
             if (clientEntity == null)
             {
                 return false;
             }
 
-            _context.Clients.Remove(clientEntity);
+            _context.Client.Remove(clientEntity);
             var changes = await _context.SaveChangesAsync();
             return changes > 0;
         }
@@ -177,7 +177,7 @@ namespace ClientService.Repository
         public async Task<List<Client>> GetListFriends(Guid clientId)
         {
             // Получаем все сущности клиентов, у которых в списке друзей есть данный clientId
-            List<ClientEntity> clientEntities = await _context.Clients
+            List<ClientEntity> clientEntities = await _context.Client
                 .Where(c => c.friends.Contains(clientId))
                 .ToListAsync();
 

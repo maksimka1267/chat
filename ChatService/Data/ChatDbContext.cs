@@ -11,7 +11,7 @@ namespace ChatService.Data
             Database.Migrate();
         }
 
-        public DbSet<ChatEntity> Chats { get; set; }
+        public DbSet<ChatEntity> Chat { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -18,6 +18,7 @@ namespace MessageService.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Text = table.Column<string>(type: "text", nullable: true),
                     Author = table.Column<Guid>(type: "uuid", nullable: false),
+                    Chat = table.Column<Guid>(type: "uuid", nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Photo = table.Column<byte[]>(type: "bytea", nullable: true)
                 },

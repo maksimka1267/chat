@@ -4,28 +4,28 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ClientService.Migrations
+namespace ChatService.Migrations
 {
     /// <inheritdoc />
-    public partial class Client_test : Migration
+    public partial class test : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Clients",
+                name: "Chat",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    userName = table.Column<string>(type: "text", nullable: false),
-                    password = table.Column<string>(type: "text", nullable: false),
-                    email = table.Column<string>(type: "text", nullable: false),
-                    friends = table.Column<List<Guid>>(type: "uuid[]", nullable: false),
-                    chats = table.Column<List<Guid>>(type: "uuid[]", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Chaters = table.Column<List<Guid>>(type: "uuid[]", nullable: false),
+                    Messages = table.Column<List<Guid>>(type: "uuid[]", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Clients", x => x.Id);
+                    table.PrimaryKey("PK_Chat", x => x.Id);
                 });
         }
 
@@ -33,7 +33,7 @@ namespace ClientService.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Clients");
+                name: "Chat");
         }
     }
 }
