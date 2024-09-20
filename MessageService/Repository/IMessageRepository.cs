@@ -1,13 +1,13 @@
-﻿using MessageService.Model;
+﻿using MessageService.Entity;
 
 namespace MessageService.Repository
 {
     public interface IMessageRepository
     {
-        Task<bool> SendMessageAsync(Message message);
-        Task<Message> GetMessageAsync(Guid messageId);
-        Task<bool> DeleteMessageAsync(Guid messageId);
-        Task<bool> UpdateMessageAsync(Guid id, string message);
-        Task<IEnumerable<Message>> FindMessagesAsync(string text);
+        Task<MessageEntity> SendMessageAsync(MessageEntity message);
+        Task<MessageEntity> GetMessageAsync(Guid messageId);
+        Task DeleteMessageAsync(Guid messageId);
+        Task UpdateMessageAsync(Guid id, string message);
+        Task<IEnumerable<MessageEntity>> FindMessagesAsync(string text);
     }
 }

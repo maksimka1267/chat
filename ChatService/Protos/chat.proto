@@ -12,6 +12,7 @@ service ChatService {
     rpc GetChatById(GetChatByIdRequest) returns (GetChatByIdResponse);
     rpc GetAllChats(GetlAllChatRequest) returns (GetlAllChatResponse);
     rpc UpdateChat(UpdateChatRequest) returns (UpdateChatResponse);
+    rpc AddMessage(AddMessageRequest) returns (AddMessageResponse);
     rpc DeleteChat(DeleteChatRequest) returns (DeleteChatResponse); // Исправлено
     rpc GetAllChatsOfClient(GetAllChatsOfClientRequest) returns (GetAllChatsOfClientResponse);
 }
@@ -39,6 +40,16 @@ message UpdateChatRequest {
 }
 
 message UpdateChatResponse {
+    bool IsSuccess = 1;
+    string ErrorMessage = 2;
+}
+
+message AddMessageRequest{
+    string id = 1;
+    string messageId = 2;
+}
+
+message AddMessageResponse{
     bool IsSuccess = 1;
     string ErrorMessage = 2;
 }

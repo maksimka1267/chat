@@ -2,7 +2,7 @@
 {
     public class MessageEntity
     {
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
 
         public string? Text { get; set; }
         public Guid Author { get; set; }

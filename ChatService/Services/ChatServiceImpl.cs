@@ -144,8 +144,39 @@ namespace ChatService.Services
                 };
             }
         }
+        // Метод для добавления сообщения в чат
+        public override async Task<AddMessageResponse> AddMessage(AddMessageRequest request, ServerCallContext context)
+        {
+            // Получаем существующий чат из базы данных
+            var chatEntity = await _repository.GetChatByIdAsync(Guid.Parse(request.Id));
 
+            if (chatEntity == null)
+            {
+                return new AddMessageResponse
+                {
+                    IsSuccess = false,
+                    ErrorMessage = "Chat not found"
+                };
+            }
 
+            // Добавляем идентификатор сообщения в список сообщений чата
+            chatEntity.Messages.Add(Guid.Parse(request.MessageId));
+
+            // Обновляем чат в базе данных
+            try
+            {
+                await _repository.UpdateChatAsync(chatEntity);
+                return new AddMessageResponse { IsSuccess = true };
+            }
+            catch (Exception ex)
+            {
+                return new AddMessageResponse
+                {
+                    IsSuccess = false,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
         // Метод для удаления чата
         public override async Task<DeleteChatResponse> DeleteChat(DeleteChatRequest request, ServerCallContext context)
         {
