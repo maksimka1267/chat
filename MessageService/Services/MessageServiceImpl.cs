@@ -27,6 +27,7 @@ namespace MessageService.Services
                 Text = request.Text,
                 Author = Guid.Parse(request.Author),
                 Chat = Guid.Parse(request.ChatId),
+                Date = DateTime.UtcNow,
                 Photo = request.Photo != null ? request.Photo.ToByteArray() : null // Проверьте, что Photo не null
             };
 

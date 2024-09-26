@@ -104,7 +104,7 @@ namespace APIGateway.Repository
 
         public async Task<bool> DeleteMessage(Guid id)
         {
-            var request = new DeleteMessageRequest { Id = id.ToString() };
+            var request = new ServiceMessage.DeleteMessageRequest { Id = id.ToString() };
             var response = await _client.DeleteMessageAsync(request);
 
             if (!response.IsSuccess)

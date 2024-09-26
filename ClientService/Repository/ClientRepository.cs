@@ -151,12 +151,12 @@ namespace ClientService.Repository
             return changes > 0;
         }
 
-        /*public async Task<bool> AddChat(Guid clientId, Guid chatId)
+        public async Task AddChatToClientAsync(Guid clientId, Guid chatId)
         {
-            var clientEntity = await _context.Clients.FindAsync(clientId);
+            var clientEntity = await _context.Client.FindAsync(clientId);
             if (clientEntity == null)
             {
-                return false;
+                throw new Exception("Client not found");
             }
 
             if (clientEntity.chats == null)
@@ -167,13 +167,11 @@ namespace ClientService.Repository
             if (!clientEntity.chats.Contains(chatId))
             {
                 clientEntity.chats.Add(chatId);
-                _context.Clients.Update(clientEntity);
+                _context.Client.Update(clientEntity);
                 await _context.SaveChangesAsync();
             }
 
-            return true;
         }
-        */
         public async Task<List<Client>> GetListFriends(Guid clientId)
         {
             // Получаем все сущности клиентов, у которых в списке друзей есть данный clientId
@@ -186,6 +184,5 @@ namespace ClientService.Repository
 
             return clients;
         }
-
     }
 }

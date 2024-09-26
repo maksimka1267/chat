@@ -42,5 +42,14 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages != null ? src.Messages.Select(m => m.ToString()).ToArray() : null))
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.ToDateTime().ToString("o")))
             .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt != null ? src.UpdatedAt.ToDateTime().ToString("o") : null));
+
+        // Маппинг для GetMessageResponse и MessageModel
+        CreateMap<GetMessageResponse, MessageModel>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Message.Id.ToString()))
+            .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Message.Text))
+            .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Message.Author.ToString()))
+            .ForMember(dest => dest.ChatId, opt => opt.MapFrom(src => src.Message.ChatId.ToString()))
+            .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Message.Photo != null ? src.Message.Photo : null))
+            .ForMember(dest => dest.Date, opt => opt.MapFrom(src => DateTime.Parse(src.Message.Date)));
     }
 }

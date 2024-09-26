@@ -10,5 +10,7 @@ namespace ChatService.Repository
         Task<IEnumerable<ChatEntity>> GetAllChatsofClientAsync(Guid clientId);
         Task UpdateChatAsync(ChatEntity chat);
         Task DeleteChatAsync(Guid id);
+        Task AddMessageAsync(Guid chatId, Guid messageId);
+        Task DeleteMessageAsync(Guid chatId, Guid messageId);
     }
 }

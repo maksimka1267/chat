@@ -177,6 +177,39 @@ namespace ChatService.Services
                 };
             }
         }
+        public override async Task<DeleteMessageResponse> DeleteMessage(DeleteMessageRequest request, ServerCallContext context)
+        {
+            // Получаем существующий чат из базы данных
+            var chatEntity = await _repository.GetChatByIdAsync(Guid.Parse(request.Id));
+
+            if (chatEntity == null)
+            {
+                return new DeleteMessageResponse
+                {
+                    IsSuccess = false,
+                    ErrorMessage = "Chat not found"
+                };
+            }
+
+            // Удаляем сообщение из списка сообщений чата
+            var messageId = Guid.Parse(request.MessageId);
+            if (chatEntity.Messages.Contains(messageId))
+            {
+                chatEntity.Messages.Remove(messageId);
+                await _repository.UpdateChatAsync(chatEntity);
+
+                return new DeleteMessageResponse { IsSuccess = true };
+            }
+            else
+            {
+                return new DeleteMessageResponse
+                {
+                    IsSuccess = false,
+                    ErrorMessage = "Message not found in chat"
+                };
+            }
+        }
+
         // Метод для удаления чата
         public override async Task<DeleteChatResponse> DeleteChat(DeleteChatRequest request, ServerCallContext context)
         {
@@ -184,7 +217,8 @@ namespace ChatService.Services
 
             return new DeleteChatResponse
             {
-                IsSuccess = true
+                IsSuccess = true,
+                ErrorMessage ="Чат удален"
             };
         }
 

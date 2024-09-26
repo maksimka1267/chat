@@ -171,22 +171,25 @@ namespace ClientService.Services
         }
 
 
-       /* public override async Task<AddChatResponse> AddChat(AddChatRequest request, ServerCallContext context)
+       public override async Task<AddChatToClientResponse> AddChatToClient(AddChatToClientRequest request, ServerCallContext context)
         {
             var client = await _clientRepository.GetClientById(Guid.Parse(request.ClientId));
 
             if (client == null)
             {
-                return new AddChatResponse
+                return new AddChatToClientResponse
                 {
                     IsSuccess = false,
                     ErrorMessage = "Клиент не найден"
                 };
             }
 
-            var isSuccess = await _clientRepository.AddChat(client.Id, Guid.Parse(request.ChatId));
-            return new AddChatResponse { IsSuccess = isSuccess };
-        }*/
+            await _clientRepository.AddChatToClientAsync(client.Id, Guid.Parse(request.ChatId));
+            return new AddChatToClientResponse
+            {
+                IsSuccess = true
+            };
+        }
         public override async Task<ListFriendResponse> ListFriend(ListFriendRequest request, ServerCallContext context)
         {
             // Преобразуем ClientId из строки в Guid

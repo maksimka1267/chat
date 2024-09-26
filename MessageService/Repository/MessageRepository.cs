@@ -30,12 +30,12 @@ namespace MessageService.Repository
         public async Task DeleteMessageAsync(Guid messageId)
         {
             var message = await _context.Messages.FindAsync(messageId);
-            //обновляем чат
-            var request1 = new UpdateChatRequest
+            var test = new DeleteMessageRequest
             {
                 Id = message.Chat.ToString(),
+                MessageId = messageId.ToString(),
             };
-            var response1 = await _chatclient.UpdateChatAsync(request1);
+            await _chatclient.DeleteMessageAsync(test);
             _context.Messages.Remove(message);
             await _context.SaveChangesAsync();
         }
@@ -52,7 +52,7 @@ namespace MessageService.Repository
             {
                 Id = messageEntity.Chat.ToString(),
             };
-            var response1 = await _chatclient.UpdateChatAsync(request1);
+            await _chatclient.UpdateChatAsync(request1);
             return messageEntity;
         }
 
@@ -63,16 +63,15 @@ namespace MessageService.Repository
                 _logger.LogInformation("Starting SendMessageAsync method");
 
                 message.Date = DateTime.UtcNow;
+                await _context.Messages.AddAsync(message);
+                await _context.SaveChangesAsync();
                 //обновляем чат
                 var request1 = new AddMessageRequest
                 {
                     Id = message.Chat.ToString(),
                     MessageId = message.Id.ToString(),
                 };
-                var response1 = await _chatclient.AddMessageAsync(request1);
-                await _context.Messages.AddAsync(message);
-                await _context.SaveChangesAsync();
-
+                await _chatclient.AddMessageAsync(request1);
                 _logger.LogInformation("Message saved to database successfully");
 
                 var addedMessageEntity = await _context.Messages.FindAsync(message.Id);

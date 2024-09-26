@@ -11,7 +11,7 @@ namespace ClientService.Repository
         Task<bool> RegisterClientAsync(Client client);
         Task<bool> AddClient(Client client);
         Task<bool> AddFriend(Guid clientId, Guid friendsId);
-        //Task<bool> AddChat(Guid clientId, Guid chatId);
+        Task AddChatToClientAsync(Guid chatId, Guid clientId);
         Task<bool> DeleteFriend(Guid clientId, Guid friendsId);
         Task<bool> DeleteClient(Guid client);
         Task<List<Client>> GetListFriends(Guid client);

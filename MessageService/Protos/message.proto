@@ -17,6 +17,7 @@ message Message {
     string author = 3;
     bytes photo = 4;
     string chatId = 5;
+    string date = 6; // Добавляем поле для даты
 }
 
 message SendMessageRequest {
@@ -24,6 +25,7 @@ message SendMessageRequest {
     bytes photo = 2;
     string author = 3;
     string chatId = 4;
+    string date = 5;
 }
 
 message SendMessageResponse {

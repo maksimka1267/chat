@@ -13,6 +13,7 @@ service ChatService {
     rpc GetAllChats(GetlAllChatRequest) returns (GetlAllChatResponse);
     rpc UpdateChat(UpdateChatRequest) returns (UpdateChatResponse);
     rpc AddMessage(AddMessageRequest) returns (AddMessageResponse);
+    rpc DeleteMessage(DeleteMessageRequest) returns (DeleteMessageResponse);
     rpc DeleteChat(DeleteChatRequest) returns (DeleteChatResponse); // Исправлено
     rpc GetAllChatsOfClient(GetAllChatsOfClientRequest) returns (GetAllChatsOfClientResponse);
 }
@@ -54,6 +55,15 @@ message AddMessageResponse{
     string ErrorMessage = 2;
 }
 
+message DeleteMessageRequest{
+    string id = 1;
+    string messageId = 2;
+}
+
+message DeleteMessageResponse{
+    bool IsSuccess = 1;
+    string ErrorMessage = 2;
+}
 // Запити для видалення та пошуку чатів
 message DeleteChatRequest {
     string id = 1;

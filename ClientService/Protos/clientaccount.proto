@@ -10,6 +10,8 @@ service ClientAccount {
     rpc GetClientInfo(GetClientInfoRequest) returns (GetClientInfoResponse);
     rpc AddFriend(AddFriendRequest) returns (AddFriendResponse);
     rpc ListFriend(ListFriendRequest) returns (ListFriendResponse);
+    rpc AddChatToClient(AddChatToClientRequest) returns (AddChatToClientResponse);
+    rpc RemoveChatToClient(RemoveChatToClientRequest) returns (RemoveChatToClientResponse);
     rpc DeleteFriend(DeleteFriendRequest) returns (DeleteFriendResponse);
     rpc DeleteClient(DeleteClientRequest) returns (DeleteClientResponse);
 }
@@ -32,6 +34,25 @@ message ListFriendResponse{
     repeated ClientMessage friends = 3;
 }
 
+message AddChatToClientRequest{
+    string clientId = 1;
+    string chatId = 2;
+}
+
+message AddChatToClientResponse{
+    bool isSuccess = 1;
+    string errorMessage = 2;
+}
+
+message RemoveChatToClientRequest{
+    string clientId = 1;
+    string chatId = 2;
+}
+
+message RemoveChatToClientResponse{
+    bool isSuccess = 1;
+    string errorMessage = 2;
+}
 message DeleteClientRequest {
     string clientId = 1;
 }
